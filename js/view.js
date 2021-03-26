@@ -5,6 +5,14 @@ class View {
         this._input = $('#input');
         this._addNoteBtn = $('#add-note-btn');
         this._notesLst = $('#notes-lst');
+        this._colours = [
+            'primary',
+            'secondary',
+            'success',
+            'info',
+            'warning',
+            'danger'
+        ];
     }
 
     getInput() {
@@ -27,62 +35,103 @@ class View {
     }
 
     displayNote(note, deleteHandler) {
-        this._notesLst.append(this._createAlert(note, deleteHandler));
+        this._notesLst.append(this._createCard(note, deleteHandler));
     }
 
     removeNote(timestamp) {
         $(`#${timestamp}`).remove();
     }
 
-    _createCard(note) {
-        /* List of possible bg colours. */
-        const bgColours = [
-            'bg-primary',
-            'bg-secondary',
-            'bg-success',
-            'bg-info',
-            'bg-warning',
-            'bg-danger'
-        ];
-    
-        let bgColour = bgColours[note.colour];
-    
-        /* Build the card that our notes are displayed on. */
-        let card = $('<div/>').addClass(`card ${bgColour}`).attr({ 'id': note.timestamp}).append(
-                $('<div/>').addClass('card-body').append(
-                    $('<div/>').text(note.text).addClass('card-text')
+    _createCard(note, deleteHandler) {
+        let card = 
+            $('<div/>')
+            .addClass(`card bg-${this._colours[note.colour]}`)
+            .attr({ 
+                'id': note.timestamp
+            })
+            .append(
+                $('<div/>')
+                .addClass('card-body')
+                .append(
+                    $('<div/>')
+                    .text(note.text)
+                    .addClass('card-text')
                 )
-            );
+            )
+            .on('click', () => {
+                this._showDetailsModal(note, deleteHandler);
+            });
     
         return card;
     }
 
+    _showDetailsModal(note, deleteHandler) {
+        let modal = 
+            $('<div/>')
+            .addClass('modal fade')
+            .attr({
+                'id': 'details-modal',
+                'tabindex': '-1',
+                'role': 'dialog',
+                'aria-hidden': 'true'
+            });
 
-    _createAlert(note, deleteHandler) {
-        const colours = [
-            'primary',
-            'secondary',
-            'success',
-            'info',
-            'warning',
-            'danger'
-        ];
-    
-        let noteDiv =  $('<div/>').addClass(`alert alert-${colours[note.colour]} alert-dismissible fade show`)
-                                  .attr({'id': note.timestamp});
+        let dialog = 
+            $('<div/>')
+            .addClass('modal-dialog')
+            .attr({
+                'role': 'document'
+            });
+               
+        let content = 
+            $('<div/>')
+            .addClass(`modal-content bg-${this._colours[note.colour]}`);
 
-        let noteText = $('<p/>').text(note.text);
+        let header =
+            $('<div/>')
+            .addClass('modal-header')
+            .append(
+                $('<h5/>')
+                .text('Note'),
 
-        let closeBtn = $('<button/>').addClass('close')
-                                     .append($('<span/>').html('&times;'))
-                                     .on('click', () => { 
-                                            if (confirm('Delete this note?')) {
-                                                deleteHandler(note.timestamp);
-                                            } 
-                                     });
+                $('<button/>')
+                .addClass('close')
+                .append(
+                    $('<span/>')
+                    .html('&times;')
+                )
+                .on('click', () => {
+                    modal.modal('hide');
+                })
+            );
 
-        noteDiv.append(noteText, closeBtn);
+        let body = 
+            $('<div/>')
+            .addClass('modal-body')
+            .append(
+                $('<p/>')
+                .text(note.text)
+            );
 
-        return noteDiv;
+
+        let footer = 
+            $('<div/>')
+            .addClass('modal-footer')
+            .append(
+                $('<i/>')
+                .addClass('fas fa-trash')
+                .css('fontSize', '1.5rem')
+                .on('click', () => { 
+                    if (confirm('Delete this note?')) {
+                        modal.modal('hide');
+                        deleteHandler(note.timestamp);
+                    } 
+            }));
+
+        content.append(header, body, footer);
+        dialog.append(content);
+        modal.append(dialog);
+
+        modal.modal('show');
     }
 }

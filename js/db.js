@@ -5,14 +5,14 @@ class DB {
         this._db;
         this._dbName = 'sticky-notes';
         this._ver = 1;
-        this._DEBUG = true;
+        this._debug = true;
     }
     
     initDb(callback) {
         let req = indexedDB.open(this._dbName, this._ver);
 
         req.onupgradeneeded = event => {
-            if (this._DEBUG) {
+            if (this._debug) {
                 console.log('Creating db...');
             }
 
@@ -21,7 +21,7 @@ class DB {
         };
 
         req.onsuccess = event => {
-            if (this._DEBUG) {
+            if (this._debug) {
                 console.log('Successfully initialised db!')
             }
             
@@ -36,7 +36,7 @@ class DB {
     }
     
     getNotes(callback) {
-        if (this._DEBUG) {
+        if (this._debug) {
             console.log('Loading notes from db...');
         }
 
@@ -46,7 +46,7 @@ class DB {
         let req = notes.getAll();
 
         req.onsuccess = event => {
-            if (this._DEBUG) {
+            if (this._debug) {
                 console.log('Successfully loaded all notes.');
             }
             
@@ -60,7 +60,7 @@ class DB {
     }
 
     addNote(note, callback) {
-        if (this._DEBUG) {
+        if (this._debug) {
             console.log('Adding note to db:');
             console.log(note);
         }
@@ -71,7 +71,7 @@ class DB {
         let req = notes.put(note, note.timestamp);
 
         req.onsuccess = event => {
-            if (this._DEBUG) {
+            if (this._debug) {
                 console.log('Successfully added note to db.');
                 console.log(event);
             }
@@ -86,7 +86,7 @@ class DB {
     }
 
     deleteNote(timestamp, callback) {
-        if (this._DEBUG) {
+        if (this._debug) {
             console.log('Deleting note from the db:', timestamp);
         }
 
@@ -96,7 +96,7 @@ class DB {
         let req = notes.delete(timestamp);
 
         req.onsuccess = event => {
-            if (this._DEBUG) {
+            if (this._debug) {
                 console.log('Successfully deleted note from db.');
                 console.log(event);
             }
