@@ -3,7 +3,7 @@
 class Model {
     /**
      * Gets all notes from the db.
-     * @returns A list of notes.
+     * @returns {Array<object>} A list of notes.
      */
     async getNotes() { 
         /* Request all notes from the server and wait for the response. */
@@ -23,7 +23,7 @@ class Model {
     /**
      * Builds a note from a provided input and adds it to the db.
      * @param {string} input The text content of the note. 
-     * @returns The note that was added to the db.
+     * @returns {object} The note that was added to the db.
      */
     async addNote(input) {
         /* Build the note from the provided input. */
@@ -47,7 +47,7 @@ class Model {
     /**
      * Deletes a specified note from the db.
      * @param {string} timestamp The timestamp of the note to be deleted.
-     * @returns The timestamp of the note that was deleted.
+     * @returns {string} The timestamp of the note that was deleted.
      */
     async deleteNote(timestamp) {
         /* Send the note to be deleted to the db and wait for the response. */
