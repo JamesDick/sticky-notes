@@ -20,10 +20,6 @@ $(() => {
     
     async function displayNotes() {
         let notes = await model.getNotes();
-        if (notes[0] == undefined) {
-            console.log('No notes were loaded from the db.')
-            return;
-        }
         view.displayNotes(notes, deleteHandler)
     }
 });
