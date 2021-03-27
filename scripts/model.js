@@ -1,10 +1,6 @@
 'use strict';
 
 class Model {
-    constructor() {
-
-    }
-
     async getNotes() { 
         let res = await fetch('notes/get.php', {
             method: 'POST',
