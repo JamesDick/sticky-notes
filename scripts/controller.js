@@ -17,14 +17,12 @@ $(() => {
         });
     });
 
-    model.initDb(() => {
-        model.getNotes(notes => {
-            if (notes[0] == undefined) {
-                console.log('No notes were loaded from the db.')
-                return;
-            }
-            
-            view.displayNotes(notes, deleteHandler);
-        });
+    model.getNotes(notes => {
+        if (notes[0] == undefined) {
+            console.log('No notes were loaded from the db.')
+            return;
+        }
+        
+        view.displayNotes(notes, deleteHandler);
     });
 });
