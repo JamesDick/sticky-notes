@@ -2,7 +2,7 @@
 
 class Model {
     constructor() {
-        
+
     }
 
     async getNotes() { 
@@ -30,7 +30,7 @@ class Model {
             body: JSON.stringify(note)
         });
         
-        let added = res.json();
+        let added = await res.json();
         return added;
     }
 
