@@ -4,7 +4,7 @@ class Model {
     /**
      * Opens a connection to the db.
      * If no db exists of the current version, a new one is created.
-     * @returns {Promise<IDBDatabase} An enhanced IndexedDB db that works on Promises.
+     * @returns {Promise<IDBDatabase>} An enhanced IndexedDB db that works on Promises.
      */
     async getDB() {
         const db = await idb.openDB('sticky-notes', 2, {
