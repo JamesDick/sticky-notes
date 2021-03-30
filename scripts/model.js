@@ -1,4 +1,5 @@
 'use strict';
+import { openDB } from 'https://unpkg.com/idb?module';
 
 class Model {
     /**
@@ -6,17 +7,17 @@ class Model {
      * @returns {Array<object>} A list of notes.
      */
     async getNotes() { 
-        /* Request all notes from the server and wait for the response. */
-        let res = await fetch('notes/get.php', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+        let db = await openDB('sticky-notes', 1, upgradeDB => { 
+            upgradeDB.createObjectStore('notes')
         });
-        
-        /* Parse the response as json and return. */
-        let notes = await res.json();
+
+        let tx = db.transaction('notes', 'readonly');
+        let notes = tx.objectStore('notes');
+
+        let notes = await notes.getAll();
+        await tx.done;
+
+        db.close();
         return notes;
     }
 
@@ -26,22 +27,24 @@ class Model {
      * @returns {object} The note that was added to the db.
      */
     async addNote(input) {
-        /* Build the note from the provided input. */
         let note = {
             text: input,
             timestamp: Date.now(),
             colour: Math.floor(Math.random() * 6)
         };
 
-        /* Send the note to the db and wait for the response. */
-        let res = await fetch('notes/add.php', {
-            method: 'post',
-            body: JSON.stringify(note)
+        let db = await openDB('sticky-notes', 1, upgradeDB => { 
+            upgradeDB.createObjectStore('notes')
         });
-        
-        /* Parse the response as json and return. */
-        let added = await res.json();
-        return added;
+
+        let tx = db.transaction('notes', 'readwrite');
+        let notes = tx.objectStore('notes');
+
+        await db.put('notes', note, note.timestamp);
+        await tx.done;
+
+        db.close();
+        return note;
     }
 
     /**
@@ -50,14 +53,17 @@ class Model {
      * @returns {string} The timestamp of the note that was deleted.
      */
     async deleteNote(timestamp) {
-        /* Send the note to be deleted to the db and wait for the response. */
-        let res = await fetch('notes/delete.php', {
-            method: 'post',
-            body: JSON.stringify({timestamp: timestamp})
+        let db = await openDB('sticky-notes', 1, upgradeDB => { 
+            upgradeDB.createObjectStore('notes')
         });
-        
-        /* Parse the response as json and return. */
-        let deleted = await res.json();
-        return deleted.deleted;
+
+        let tx = db.transaction('notes', 'readwrite');
+        let notes = tx.objectStore('notes');
+
+        await notes.delete(timestamp);
+        await tx.done;
+
+        db.close();
+        return timestamp;
     }
 }
