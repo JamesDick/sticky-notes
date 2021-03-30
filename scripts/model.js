@@ -1,24 +1,29 @@
 'use strict';
-import { openDB } from 'https://unpkg.com/idb?module';
 
 class Model {
+    /**
+     * Opens a connection to the db.
+     * If no db exists of the current version, a new one is created.
+     * @returns {Promise<IDBDatabase} An enhanced IndexedDB db that works on Promises.
+     */
+    async getDB() {
+        const db = await idb.openDB('sticky-notes', 2, {
+            upgrade(db) {
+                const store = db.createObjectStore('notes', { keyPath: 'timestamp' });
+                store.createIndex('timestamp', 'timestamp', { unique: true });
+            }
+        });
+        
+        return db;
+    }
+
     /**
      * Gets all notes from the db.
      * @returns {Array<object>} A list of notes.
      */
     async getNotes() { 
-        let db = await openDB('sticky-notes', 1, upgradeDB => { 
-            upgradeDB.createObjectStore('notes')
-        });
-
-        let tx = db.transaction('notes', 'readonly');
-        let notes = tx.objectStore('notes');
-
-        let notes = await notes.getAll();
-        await tx.done;
-
-        db.close();
-        return notes;
+        let db = await this.getDB();
+        return await db.getAll('notes');
     }
 
     /**
@@ -33,17 +38,8 @@ class Model {
             colour: Math.floor(Math.random() * 6)
         };
 
-        let db = await openDB('sticky-notes', 1, upgradeDB => { 
-            upgradeDB.createObjectStore('notes')
-        });
-
-        let tx = db.transaction('notes', 'readwrite');
-        let notes = tx.objectStore('notes');
-
-        await db.put('notes', note, note.timestamp);
-        await tx.done;
-
-        db.close();
+        let db = await this.getDB();        
+        await db.put('notes', note);
         return note;
     }
 
@@ -53,17 +49,8 @@ class Model {
      * @returns {string} The timestamp of the note that was deleted.
      */
     async deleteNote(timestamp) {
-        let db = await openDB('sticky-notes', 1, upgradeDB => { 
-            upgradeDB.createObjectStore('notes')
-        });
-
-        let tx = db.transaction('notes', 'readwrite');
-        let notes = tx.objectStore('notes');
-
-        await notes.delete(timestamp);
-        await tx.done;
-
-        db.close();
+        let db = await this.getDB();
+        await db.delete('notes', timestamp);
         return timestamp;
     }
 }
