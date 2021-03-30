@@ -1,5 +1,5 @@
 # Sticky Notes
-Simply web app for jotting down thoughts in the form of colourful little sticky notes.
+Simple web app for jotting down thoughts in the form of colourful little sticky notes.
 
 # Usage
 The app can be accessed by visiting the site where it's hosted, [here](https://devweb2020.cis.strath.ac.uk/~qsb19184/sticky-notes-asdfghjkl/).
