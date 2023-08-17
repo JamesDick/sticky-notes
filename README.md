@@ -1,9 +1,6 @@
 # Sticky Notes
 Web app for jotting down thoughts in the form of colourful little sticky notes.
 
-# Usage
-The app can be accessed by visiting the site where it's hosted, [here](https://devweb2020.cis.strath.ac.uk/~qsb19184/sticky-notes-asdfghjkl/).
-
 ## Adding Notes
 Adding notes is as simple as typing in the text area at the top of the page and clicking 'Add Note'. <br/><br/>
 ![usage-adding](https://user-images.githubusercontent.com/47461489/113029050-e72a8980-9183-11eb-8383-472613caddb7.gif)
